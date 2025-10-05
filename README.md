@@ -5,6 +5,73 @@ It serves as a collection of coursework, experiments, and practice implementatio
 
 ## 📂 Contents
 
+```
+.
+├── .github
+│   ├── CODEOWNERS
+│   ├── readmetreerc.yaml
+│   └── workflows
+│       └── generate-readme-tree.yaml
+├── LICENSE
+├── README.md
+└── ep1
+    ├── einstufungstest-k2
+    │   ├── .gitignore
+    │   ├── .idea
+    │   │   ├── .gitignore
+    │   │   ├── gradle.xml
+    │   │   ├── misc.xml
+    │   │   └── vcs.xml
+    │   ├── README.md
+    │   ├── build.gradle.kts
+    │   ├── gradle
+    │   │   └── wrapper
+    │   │       ├── gradle-wrapper.jar
+    │   │       └── gradle-wrapper.properties
+    │   ├── gradlew
+    │   ├── gradlew.bat
+    │   ├── settings.gradle.kts
+    │   └── src
+    │       └── main
+    │           └── java
+    │               └── org
+    │                   └── trueberryless
+    │                       └── ep1
+    │                           └── k2
+    │                               └── einstufungstest
+    │                                   ├── Main.java
+    │                                   ├── TestExample1.java
+    │                                   ├── TestExample2.java
+    │                                   └── TestExample3.java
+    └── einstufungstest-k3
+        ├── .gitignore
+        ├── .idea
+        │   ├── .gitignore
+        │   ├── gradle.xml
+        │   ├── misc.xml
+        │   └── vcs.xml
+        ├── build.gradle.kts
+        ├── gradle
+        │   └── wrapper
+        │       ├── gradle-wrapper.jar
+        │       └── gradle-wrapper.properties
+        ├── gradlew
+        ├── gradlew.bat
+        ├── settings.gradle.kts
+        └── src
+            └── main
+                └── java
+                    └── org
+                        └── trueberryless
+                            └── ep1
+                                └── k3
+                                    └── einstufungstest
+                                        ├── Main.java
+                                        ├── TestExample1.java
+                                        └── TestExample2.java
+
+```
+
 ## 🎯 Purpose
 
 The goal of this repository is to document my progress, keep track of projects, and share code that may be useful as references for others.
