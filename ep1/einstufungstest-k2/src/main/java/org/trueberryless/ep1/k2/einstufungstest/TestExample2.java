@@ -65,13 +65,13 @@ public class TestExample2 {
             System.out.print(j + "" + symbol);
             symbol = symbol == '-' ? '+' : '-';
         }
-        System.out.println();
+        if (i > 0) System.out.println();
         symbol = '+';
         for (int j = 1; j <= i; j++) {
             if (j % 3 != 0) continue;
             System.out.print(j + "" + symbol);
             symbol = symbol == '-' ? '+' : '-';
         }
-        System.out.println();
+        if (i >= 3) System.out.println();
     }
 }
