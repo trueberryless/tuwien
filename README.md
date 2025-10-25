@@ -5,6 +5,9 @@ It serves as a collection of coursework, experiments, and practice implementatio
 
 ## 📂 Contents
 
+- [`ep1/einstufungstest-k2`](https://github.com/trueberryless/tuwien/tree/main/ep1/einstufungstest-k2)
+- [`ep1/einstufungstest-k3`](https://github.com/trueberryless/tuwien/tree/main/ep1/einstufungstest-k3)
+
 ## 🎯 Purpose
 
 The goal of this repository is to document my progress, keep track of projects, and share code that may be useful as references for others.
