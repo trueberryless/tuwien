@@ -22,6 +22,11 @@ public class TestExample2 {
         System.out.println(Arrays.deepToString(result1));
         fill(test3, test2[2], test2[3]);
         System.out.println(Arrays.deepToString(test3));
+
+        System.out.println(extractString(age1, 0, age1.length, '-'));
+        System.out.println(extractString(age1, 1, 7, 'u'));
+        System.out.println(extractString(age2, 0, 5, 'a'));
+        System.out.println(extractString(age2, 5, age2.length, 'n'));
     }
 
     public static int[][] generate(int[][] input) {
@@ -66,8 +71,27 @@ public class TestExample2 {
     }
 
     public static String extractString(char[] sequence, int start, int end, char omit) {
-        if (sequence.length == 1 && sequence[0] == omit) return null;
-        if (sequence.length == 1) return "" + sequence[0];
+        if (sequence.length == 1 && sequence[0] == omit) return "";
+        if (sequence.length == 1) return sequence[0] + "";
+        if (start > 0 || sequence[0] == omit) {
+            char[] smallerSequence = substring(sequence, 1, sequence.length);
+            return extractString(smallerSequence, start - 1, end - 1, omit);
+        }
+        else if (end < sequence.length) {
+            char[] smallerSequence = substring(sequence, 0, sequence.length - 1);
+            return extractString(smallerSequence, start, end, omit);
+        }
+        else {
+            char[] smallerSequence = substring(sequence, 1, sequence.length);
+            return sequence[0] + extractString(smallerSequence, start - 1, end - 1, omit);
+        }
+    }
 
+    private static char[] substring(char[] sequence, int start, int end) {
+        char[] result = new char[end - start];
+        for (int i = 0; i < end - start; i++) {
+            result[i] = sequence[i + start];
+        }
+        return result;
     }
 }
