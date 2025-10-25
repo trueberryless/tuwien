@@ -1,69 +1,65 @@
 #!/usr/bin/env bash
+# .github/scripts/update_readme_tree.sh
 set -euo pipefail
 
-# --- CONFIG ---
 README="README.md"
 SECTION_HEADER="## 📂 Contents"
-TMPFILE=$(mktemp)
+TMPFILE="$(mktemp)"
+GITHUB_REPOSITORY="${GITHUB_REPOSITORY:-your-org/your-repo}"    # CI sets this; fallback for local runs
+GITHUB_REF_NAME="${GITHUB_REF_NAME:-main}"                     # CI sets this; fallback to main
 
-# --- FUNCTIONS ---
-
+# Generate the markdown list of second-level directories
 generate_tree() {
+  # blank line after header for readability
   echo ""
-  # Find second-level directories (like ep1/einstufungstest-k2)
-  find . -mindepth 2 -maxdepth 2 -type d ! -path '*/.*' | sort | while read -r dir; do
-    repo_url="https://github.com/${GITHUB_REPOSITORY}/tree/${GITHUB_REF_NAME}/${dir#./}"
-    echo "- [\`${dir#./}\`](${repo_url})"
-  done
+
+  # find second-level dirs, ignore hidden dirs and vendor dirs
+  # -mindepth 2 -maxdepth 2 ensures only second-level
+  find . -mindepth 2 -maxdepth 2 -type d \
+    ! -path '*/.*' \
+    ! -path './node_modules*' \
+    ! -path './.git*' \
+    | sed 's|^\./||' \
+    | sort \
+    | while IFS= read -r dir; do
+        # build link to the folder on GitHub
+        # Ensure no leading ./ and URL-escape spaces (basic)
+        safe_dir="$(printf '%s' "$dir" | sed 's/ /%20/g')"
+        repo_url="https://github.com/${GITHUB_REPOSITORY}/tree/${GITHUB_REF_NAME}/${safe_dir}"
+        echo "- [\`${dir}\`](${repo_url})"
+      done
+
   echo ""
 }
 
-# --- MAIN LOGIC ---
-
-if ! grep -q "^${SECTION_HEADER}" "$README"; then
-  echo "❌ ERROR: '${SECTION_HEADER}' not found in README.md"
+# Ensure section header exists
+header_line="$(grep -n -m1 -xF "$SECTION_HEADER" "$README" 2>/dev/null || true)"
+if [ -z "$header_line" ]; then
+  echo "❌ ERROR: Section header '${SECTION_HEADER}' not found in ${README}."
   exit 1
 fi
 
-# Split README into three parts:
-#   1. Before the section header
-#   2. The section header itself
-#   3. Everything after the section (until next '## ' or EOF)
-awk -v header="$SECTION_HEADER" '
-  BEGIN { in_section=0 }
-  {
-    if ($0 == header) {
-      print $0 > "section_header.tmp"
-      in_section=1
-      next
-    }
+# grep -n returns "line:content"; extract line number
+header_line_number="$(printf '%s' "$header_line" | cut -d: -f1)"
 
-    if (in_section && $0 ~ /^## /) {
-      print $0 > "after_section.tmp"
-      in_section=0
-      next
-    }
+# Find the first '## ' heading AFTER the header line (next section start)
+next_section_line_number="$(awk -v h="$header_line_number" 'NR>h && /^## / { print NR; exit }' "$README" || true)"
 
-    if (in_section) {
-      next  # skip lines inside the section
-    }
+# Build new README in temporary file
+# 1) everything up to and including the header
+head -n "$header_line_number" "$README" > "$TMPFILE"
 
-    if (in_section == 0 && !($0 ~ /^## / && FNR == 1)) {
-      if (!in_section) print $0 > "before_section.tmp"
-    }
-  }
-  END {
-    if (in_section) print "" > "after_section.tmp"
-  }
-' "$README"
-
-# Rebuild README
-cat before_section.tmp > "$TMPFILE"
-cat section_header.tmp >> "$TMPFILE"
+# 2) generated tree (replace the old content under the header)
 generate_tree >> "$TMPFILE"
-cat after_section.tmp >> "$TMPFILE"
 
+# 3) append the rest (from next_section_line_number to EOF) if it exists
+if [ -n "$next_section_line_number" ]; then
+  # append starting from that line (which is the next '## ' header)
+  tail -n +"$next_section_line_number" "$README" >> "$TMPFILE"
+fi
+
+# Replace README atomically
 mv "$TMPFILE" "$README"
-rm -f before_section.tmp after_section.tmp section_header.tmp
+chmod 644 "$README"
 
-echo "✅ README.md updated — only the '${SECTION_HEADER}' section replaced."
+echo "✅ Updated '${SECTION_HEADER}' in ${README} (replaced exactly in-place)."

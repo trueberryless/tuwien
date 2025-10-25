@@ -22,6 +22,6 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
           branch: ci/update-readme-tree
           delete-branch: true
-          title: "ci: update README folder tree"
+          title: "ci: update README folder tree [skip ci]"
           body: "Automatically generated folder list under '📂 Contents'."
           labels: 🤖 bot
