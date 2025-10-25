@@ -1,28 +1,27 @@
-name: Add tree changes
+name: Update README tree
 
 on:
   push:
     branches: [main]
+  pull_request:
 
 jobs:
-  commit-tree-changes:
+  update-tree:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
-      - name: Write tree outputs to README.md
-        uses: trueberryless-org/readme-tree-writer-all@v1
+      - uses: actions/checkout@v4
+
+      - name: Update README tree
+        run: .github/scripts/update_readme_tree.sh
+
+      - name: Commit and create PR
+        uses: peter-evans/create-pull-request@v7
         with:
-          config_path: .github/readmetreerc.yaml
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
-        with:
-          commit-message: "ci: update tree"
+          commit-message: "ci: update README folder tree"
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
-          signoff: false
-          branch: ci-tree
+          branch: ci/update-readme-tree
           delete-branch: true
-          title: "ci: update tree [skip netlify]"
-          body: "This PR was automatically created to update the project structure tree in every `README.md`."
+          title: "ci: update README folder tree"
+          body: "Automatically generated folder list under '📂 Contents'."
           labels: 🤖 bot
-          draft: false
