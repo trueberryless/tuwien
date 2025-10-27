@@ -68,7 +68,7 @@ public class TestExample9 {
 
     public static boolean oddOccurrences(String s, char ch) {
         if (s.isEmpty()) return false;
-        if (s.length() == 1) return s.charAt(0) == ch;
+        if (s.length() == 1) return s.charAt(0) == ch; // optional
         return oddOccurrences(s.substring(1), ch) != (s.charAt(0) == ch);
     }
 }
